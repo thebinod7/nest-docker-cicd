@@ -1,0 +1,28 @@
+name: NestJS-CICD
+
+on:
+  push: branches:[main]
+
+jobs:
+  build:
+    runs-on: [ubuntu-latest]
+    steps:
+      - name: Checkout Source
+        uses: actions/checkout@v3
+      - name: Login to docker
+        run: docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
+      - name: Build docker image
+        run: docker build -t thebinod7/nest-demo .
+      - name: Publish image to docker hub
+        run: docker push thebinod7/nest-demo:latest
+
+  deploy:
+    needs: build
+    runs-on: [aws-ec2]
+    steps:
+      - name: Pull image from docker hub
+        run: docker pull thebinod7/nest-demo:latest
+      - name: Delete old containers
+        run: docker rm -f nest-cicd-container
+      - name: Run docker container
+        run: docker run -d -p 5000:5000 --name nest-cicd-container thebinod7/nest-demo:latest
