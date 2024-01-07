@@ -1,0 +1,31 @@
+version: '3'
+services:
+  nest-backend:
+    build:
+      context: .
+      dockerfile: thebinod7/nest-demo
+      target: development
+    command: npm run dev
+    depends_on:
+      - postgres-db
+    volumes:
+      - .:/usr/src/app
+      - /usr/src/app/node_modules
+    ports:
+      - '4040:3001'
+    environment:
+      POSTGRES_USER: binod
+      POSTGRES_PASSWORD: binod123
+      POSTGRES_DB: db_tesst
+  postgres-db:
+    image: postgres:13
+    volumes:
+      - postgres_data:/data/db
+    ports:
+      - '5454:3001'
+    environment:
+      POSTGRES_USER: binod
+      POSTGRES_PASSWORD: binod123
+      POSTGRES_DB: db_tesst
+volumes:
+  postgres_data: {}
