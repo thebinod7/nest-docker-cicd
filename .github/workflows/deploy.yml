@@ -15,14 +15,14 @@ jobs:
       - name: Build docker image
         run: docker build -t thebinod7/nest-demo:latest .
       - name: Publish image to docker hub
-        run: docker push thebinod7/nest-demo:latest:latest
+        run: docker push thebinod7/nest-demo:latest
 
   deploy:
     needs: build
     runs-on: [aws-ec2]
     steps:
       - name: Pull image from docker hub
-        run: docker pull thebinod7/nest-demo:latest:latest
+        run: docker pull thebinod7/nest-demo:latest
       - name: Delete old container
         run: docker rm -f nodejs-app-container
       - name: Run docker container
